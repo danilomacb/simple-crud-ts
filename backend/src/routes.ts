@@ -37,4 +37,15 @@ router.put('/:id', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  try {
+    await Element.findByIdAndDelete(req.params.id)
+
+    return res.status(200).send('delete succeeded')
+  } catch (err) {
+    console.error('Error on delete: ', err)
+    return res.status(500).send('Error on delete')
+  }
+})
+
 export default router
