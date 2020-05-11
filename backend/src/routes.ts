@@ -26,4 +26,15 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.put('/:id', async (req, res) => {
+  try {
+    await Element.findByIdAndUpdate(req.params.id, { ...req.body })
+
+    return res.status(200).send('update succeeded')
+  } catch (err) {
+    console.error('Error on update: ', err)
+    return res.status(500).send('Error on update')
+  }
+})
+
 export default router
