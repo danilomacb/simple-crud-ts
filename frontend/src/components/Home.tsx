@@ -2,10 +2,26 @@ import React from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 
 function Home() {
+  const url = "http://localhost:3001/";
+  let createInput: HTMLInputElement;
+
   const create = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log(event.currentTarget.firstChild)
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: createInput.value }),
+      });
+
+      createInput.value = "";
+    } catch (err) {
+      alert("Error on create element");
+      return console.error("Error on create element: ", err);
+    }
   };
 
   return (
@@ -13,7 +29,13 @@ function Home() {
       <Row>
         <Col sm={6} md={4} lg={3} className="p-2">
           <Form onSubmit={create}>
-            <Form.Control type="text" placeholder="New" />
+            <Form.Control
+              type="text"
+              placeholder="New"
+              ref={(input: HTMLInputElement) => {
+                createInput = input;
+              }}
+            />
           </Form>
         </Col>
       </Row>
