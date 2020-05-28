@@ -1,9 +1,21 @@
-import React from "react";
-import { Container, Row, Col, Form } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Form, InputGroup, Button } from "react-bootstrap";
 
 function Home() {
   const url = "http://localhost:3001/";
+
+  interface IElement {
+    _id?: string,
+    content?: string
+  }
+
+  const [elements, setElements] = useState<IElement[]>([]);
+
   let createInput: HTMLInputElement;
+
+  useEffect(() => {
+    read();
+  }, []);
 
   const create = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -18,15 +30,43 @@ function Home() {
       });
 
       createInput.value = "";
+
+      read();
     } catch (err) {
       alert("Error on create element");
       return console.error("Error on create element: ", err);
     }
   };
 
+  const read = async () => {
+    try {
+      const response = await fetch(url);
+      const elements: IElement[] = await response.json();
+
+      return setElements(elements);
+    } catch (err) {
+      alert("Error on read elements");
+      return console.error("Error on read elements: ", err);
+    }
+  }
+
   return (
     <Container className="mt-5">
       <Row>
+      {elements.map((element) => (
+          <Col key={element._id} sm={6} md={4} lg={3} className="p-2">
+            <Form>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <Button variant={"danger"}>
+                    X
+                  </Button>
+                </InputGroup.Prepend>
+                <Form.Control type="text" defaultValue={element.content} />
+              </InputGroup>
+            </Form>
+          </Col>
+        ))}
         <Col sm={6} md={4} lg={3} className="p-2">
           <Form onSubmit={create}>
             <Form.Control
