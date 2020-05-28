@@ -50,6 +50,24 @@ function Home() {
     }
   }
 
+  const update = (id: string | undefined) => async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+    try {
+      const response = await fetch(url + id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: event.target.value }),
+      });
+
+      if (response.ok) alert("Update succeeded");
+    } catch (err) {
+      alert("Error on update element");
+      return console.error("Error on update element: ", err);
+    }
+  }
+
   return (
     <Container className="mt-5">
       <Row>
@@ -62,7 +80,7 @@ function Home() {
                     X
                   </Button>
                 </InputGroup.Prepend>
-                <Form.Control type="text" defaultValue={element.content} />
+                <Form.Control type="text" defaultValue={element.content} onChange={update(element._id)} />
               </InputGroup>
             </Form>
           </Col>
