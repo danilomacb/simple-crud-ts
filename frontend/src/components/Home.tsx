@@ -17,6 +17,18 @@ function Home() {
     read();
   }, []);
 
+  const read = async () => {
+    try {
+      const response = await fetch(url);
+      const elements: IElement[] = await response.json();
+
+      return setElements(elements);
+    } catch (err) {
+      alert("Error on read elements");
+      return console.error("Error on read elements: ", err);
+    }
+  };
+
   const create = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -38,19 +50,7 @@ function Home() {
     }
   };
 
-  const read = async () => {
-    try {
-      const response = await fetch(url);
-      const elements: IElement[] = await response.json();
-
-      return setElements(elements);
-    } catch (err) {
-      alert("Error on read elements");
-      return console.error("Error on read elements: ", err);
-    }
-  };
-
-  const update = (id: string | undefined) => async (
+  const update = (id?: string) => async (
     event: React.KeyboardEvent & React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.key === "Enter") {
@@ -71,6 +71,17 @@ function Home() {
     }
   };
 
+  const del = async (id?: string) => {
+    try {
+      await fetch(url + id, { method: "DELETE" });
+
+      read();
+    } catch (err) {
+      alert("Error on delete element");
+      return console.error("Error on delete element: ", err);
+    }
+  };
+
   return (
     <Container className="mt-5">
       <Row>
@@ -78,7 +89,7 @@ function Home() {
           <Col key={element._id} sm={6} md={4} lg={3} className="p-2">
             <InputGroup>
               <InputGroup.Prepend>
-                <Button variant={"danger"}>X</Button>
+                <Button variant={"danger"} onClick={() => del(element._id)}>X</Button>
               </InputGroup.Prepend>
               <Form.Control type="text" defaultValue={element.content} onKeyDown={update(element._id)} />
             </InputGroup>
