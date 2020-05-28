@@ -5,8 +5,8 @@ function Home() {
   const url = "http://localhost:3001/";
 
   interface IElement {
-    _id?: string,
-    content?: string
+    _id?: string;
+    content?: string;
   }
 
   const [elements, setElements] = useState<IElement[]>([]);
@@ -48,41 +48,40 @@ function Home() {
       alert("Error on read elements");
       return console.error("Error on read elements: ", err);
     }
-  }
+  };
 
-  const update = (id: string | undefined) => async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-    try {
-      const response = await fetch(url + id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: event.target.value }),
-      });
+  const update = (id: string | undefined) => async (
+    event: React.KeyboardEvent & React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      try {
+        const response = await fetch(url + id, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ content: event.target.value }),
+        });
 
-      if (response.ok) alert("Update succeeded");
-    } catch (err) {
-      alert("Error on update element");
-      return console.error("Error on update element: ", err);
+        if (response.ok) alert("Update succeeded");
+      } catch (err) {
+        alert("Error on update element");
+        return console.error("Error on update element: ", err);
+      }
     }
-  }
+  };
 
   return (
     <Container className="mt-5">
       <Row>
-      {elements.map((element) => (
+        {elements.map((element) => (
           <Col key={element._id} sm={6} md={4} lg={3} className="p-2">
-            <Form>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <Button variant={"danger"}>
-                    X
-                  </Button>
-                </InputGroup.Prepend>
-                <Form.Control type="text" defaultValue={element.content} onChange={update(element._id)} />
-              </InputGroup>
-            </Form>
+            <InputGroup>
+              <InputGroup.Prepend>
+                <Button variant={"danger"}>X</Button>
+              </InputGroup.Prepend>
+              <Form.Control type="text" defaultValue={element.content} onKeyDown={update(element._id)} />
+            </InputGroup>
           </Col>
         ))}
         <Col sm={6} md={4} lg={3} className="p-2">
