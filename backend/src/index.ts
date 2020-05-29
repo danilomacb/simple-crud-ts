@@ -17,4 +17,4 @@ mongoose.connect(mongodbUrl,
     if (err) { return console.error('Error on connect mongodb: ', err) }
   })
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(port, () => console.log(`listening at http://localhost:${port}`))
